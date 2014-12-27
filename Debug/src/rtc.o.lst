@@ -1,0 +1,397 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"rtc.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.comm	RTC_InitStructure,12,4
+  19              		.align	2
+  20              		.global	RTC_Config
+  21              		.thumb
+  22              		.thumb_func
+  24              	RTC_Config:
+  25              	.LFB110:
+  26              		.file 1 "../src/rtc.c"
+   1:../src/rtc.c  **** /*
+   2:../src/rtc.c  ****  * rtc.c
+   3:../src/rtc.c  ****  *
+   4:../src/rtc.c  ****  *  Created on: 2013.07.01.
+   5:../src/rtc.c  ****  *      Author: Gergo
+   6:../src/rtc.c  ****  */
+   7:../src/rtc.c  **** 
+   8:../src/rtc.c  **** 
+   9:../src/rtc.c  **** #include "rtc.h"
+  10:../src/rtc.c  **** #include "stm32f4xx.h"
+  11:../src/rtc.c  **** #include "stm32f4xx_rtc.h"
+  12:../src/rtc.c  **** #include "stm32f4_discovery.h"
+  13:../src/rtc.c  **** 
+  14:../src/rtc.c  ****     RTC_InitTypeDef RTC_InitStructure;
+  15:../src/rtc.c  **** void RTC_Config(void)
+  16:../src/rtc.c  **** {
+  27              		.loc 1 16 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 32
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 88B0     		sub	sp, sp, #32
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_offset 40
+  39 0004 00AF     		add	r7, sp, #0
+  40              	.LCFI2:
+  41              		.cfi_def_cfa_register 7
+  17:../src/rtc.c  **** //  RTC_AlarmTypeDef RTC_AlarmStructure;
+  18:../src/rtc.c  ****     RTC_TimeTypeDef  RTC_TimeStructure;
+  19:../src/rtc.c  ****     RTC_DateTypeDef RTC_DateStructure;
+  20:../src/rtc.c  ****     NVIC_InitTypeDef NVIC_InitStructure;
+  21:../src/rtc.c  ****     EXTI_InitTypeDef EXTI_InitStructure;
+  22:../src/rtc.c  ****     RTC_InitTypeDef RTC_InitStructure;
+  23:../src/rtc.c  **** 
+  24:../src/rtc.c  **** 
+  25:../src/rtc.c  ****   /* Enable the PWR clock */
+  26:../src/rtc.c  ****   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+  42              		.loc 1 26 0
+  43 0006 4FF08050 		mov	r0, #268435456
+  44 000a 4FF00101 		mov	r1, #1
+  45 000e FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+  27:../src/rtc.c  **** 
+  28:../src/rtc.c  ****   /* Allow access to RTC */
+  29:../src/rtc.c  ****   PWR_BackupAccessCmd(ENABLE);
+  46              		.loc 1 29 0
+  47 0012 4FF00100 		mov	r0, #1
+  48 0016 FFF7FEFF 		bl	PWR_BackupAccessCmd
+  30:../src/rtc.c  **** 
+  31:../src/rtc.c  ****   RCC_BackupResetCmd(ENABLE);
+  49              		.loc 1 31 0
+  50 001a 4FF00100 		mov	r0, #1
+  51 001e FFF7FEFF 		bl	RCC_BackupResetCmd
+  32:../src/rtc.c  ****   RCC_BackupResetCmd(DISABLE);
+  52              		.loc 1 32 0
+  53 0022 4FF00000 		mov	r0, #0
+  54 0026 FFF7FEFF 		bl	RCC_BackupResetCmd
+  33:../src/rtc.c  **** 
+  34:../src/rtc.c  ****   RCC_LSEConfig(RCC_LSE_ON);
+  55              		.loc 1 34 0
+  56 002a 4FF00100 		mov	r0, #1
+  57 002e FFF7FEFF 		bl	RCC_LSEConfig
+  35:../src/rtc.c  ****   while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)
+  58              		.loc 1 35 0
+  59 0032 00BF     		nop
+  60              	.L2:
+  61              		.loc 1 35 0 is_stmt 0 discriminator 1
+  62 0034 4FF04100 		mov	r0, #65
+  63 0038 FFF7FEFF 		bl	RCC_GetFlagStatus
+  64 003c 0346     		mov	r3, r0
+  65 003e 002B     		cmp	r3, #0
+  66 0040 F8D0     		beq	.L2
+  36:../src/rtc.c  ****   {
+  37:../src/rtc.c  ****   }
+  38:../src/rtc.c  ****   RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
+  67              		.loc 1 38 0 is_stmt 1
+  68 0042 4FF48070 		mov	r0, #256
+  69 0046 FFF7FEFF 		bl	RCC_RTCCLKConfig
+  39:../src/rtc.c  **** 
+  40:../src/rtc.c  ****   //**********************************************Gergõ**************************************
+  41:../src/rtc.c  **** /*
+  42:../src/rtc.c  ****   RCC_LSICmd(ENABLE);
+  43:../src/rtc.c  ****   while(RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET)
+  44:../src/rtc.c  ****   {
+  45:../src/rtc.c  ****   }
+  46:../src/rtc.c  ****   RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
+  47:../src/rtc.c  **** */
+  48:../src/rtc.c  ****   //**********************************************Gergõ**************************************
+  49:../src/rtc.c  **** 
+  50:../src/rtc.c  ****   /* Enable the RTC Clock */
+  51:../src/rtc.c  ****   RCC_RTCCLKCmd(ENABLE);
+  70              		.loc 1 51 0
+  71 004a 4FF00100 		mov	r0, #1
+  72 004e FFF7FEFF 		bl	RCC_RTCCLKCmd
+  52:../src/rtc.c  **** 
+  53:../src/rtc.c  ****   /* Wait for RTC APB registers synchronisation */
+  54:../src/rtc.c  ****   RTC_WaitForSynchro();
+  73              		.loc 1 54 0
+  74 0052 FFF7FEFF 		bl	RTC_WaitForSynchro
+  55:../src/rtc.c  **** 
+  56:../src/rtc.c  ****   /* Calendar Configuration with LSI supposed at 32KHz */
+  57:../src/rtc.c  ****   RTC_InitStructure.RTC_AsynchPrediv = 0x7F;
+  75              		.loc 1 57 0
+  76 0056 4FF07F03 		mov	r3, #127
+  77 005a 7B60     		str	r3, [r7, #4]
+  58:../src/rtc.c  ****   RTC_InitStructure.RTC_SynchPrediv  = 0xFF; /* (32KHz / 128) - 1 = 0xFF*/
+  78              		.loc 1 58 0
+  79 005c 4FF0FF03 		mov	r3, #255
+  80 0060 BB60     		str	r3, [r7, #8]
+  59:../src/rtc.c  ****   RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+  81              		.loc 1 59 0
+  82 0062 4FF00003 		mov	r3, #0
+  83 0066 3B60     		str	r3, [r7, #0]
+  60:../src/rtc.c  ****   RTC_Init(&RTC_InitStructure);
+  84              		.loc 1 60 0
+  85 0068 3B46     		mov	r3, r7
+  86 006a 1846     		mov	r0, r3
+  87 006c FFF7FEFF 		bl	RTC_Init
+  61:../src/rtc.c  **** 
+  62:../src/rtc.c  ****   EXTI_ClearITPendingBit(EXTI_Line17);
+  88              		.loc 1 62 0
+  89 0070 4FF40030 		mov	r0, #131072
+  90 0074 FFF7FEFF 		bl	EXTI_ClearITPendingBit
+  63:../src/rtc.c  ****   EXTI_InitStructure.EXTI_Line = EXTI_Line17;
+  91              		.loc 1 63 0
+  92 0078 4FF40033 		mov	r3, #131072
+  93 007c FB60     		str	r3, [r7, #12]
+  64:../src/rtc.c  ****   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  94              		.loc 1 64 0
+  95 007e 4FF00003 		mov	r3, #0
+  96 0082 3B74     		strb	r3, [r7, #16]
+  65:../src/rtc.c  ****   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+  97              		.loc 1 65 0
+  98 0084 4FF00803 		mov	r3, #8
+  99 0088 7B74     		strb	r3, [r7, #17]
+  66:../src/rtc.c  ****   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+ 100              		.loc 1 66 0
+ 101 008a 4FF00103 		mov	r3, #1
+ 102 008e BB74     		strb	r3, [r7, #18]
+  67:../src/rtc.c  ****   EXTI_Init(&EXTI_InitStructure);
+ 103              		.loc 1 67 0
+ 104 0090 07F10C03 		add	r3, r7, #12
+ 105 0094 1846     		mov	r0, r3
+ 106 0096 FFF7FEFF 		bl	EXTI_Init
+  68:../src/rtc.c  **** 
+  69:../src/rtc.c  ****   // Enable the RTC Alarm Interrupt
+  70:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannel = RTC_Alarm_IRQn;
+ 107              		.loc 1 70 0
+ 108 009a 4FF02903 		mov	r3, #41
+ 109 009e 3B75     		strb	r3, [r7, #20]
+  71:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 110              		.loc 1 71 0
+ 111 00a0 4FF00003 		mov	r3, #0
+ 112 00a4 7B75     		strb	r3, [r7, #21]
+  72:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 113              		.loc 1 72 0
+ 114 00a6 4FF00003 		mov	r3, #0
+ 115 00aa BB75     		strb	r3, [r7, #22]
+  73:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 116              		.loc 1 73 0
+ 117 00ac 4FF00103 		mov	r3, #1
+ 118 00b0 FB75     		strb	r3, [r7, #23]
+  74:../src/rtc.c  ****   NVIC_Init(&NVIC_InitStructure);
+ 119              		.loc 1 74 0
+ 120 00b2 07F11403 		add	r3, r7, #20
+ 121 00b6 1846     		mov	r0, r3
+ 122 00b8 FFF7FEFF 		bl	NVIC_Init
+  75:../src/rtc.c  **** 
+  76:../src/rtc.c  ****   // EXTI configuration
+  77:../src/rtc.c  ****   EXTI_ClearITPendingBit(EXTI_Line22);
+ 123              		.loc 1 77 0
+ 124 00bc 4FF48000 		mov	r0, #4194304
+ 125 00c0 FFF7FEFF 		bl	EXTI_ClearITPendingBit
+  78:../src/rtc.c  ****   EXTI_InitStructure.EXTI_Line = EXTI_Line22;
+ 126              		.loc 1 78 0
+ 127 00c4 4FF48003 		mov	r3, #4194304
+ 128 00c8 FB60     		str	r3, [r7, #12]
+  79:../src/rtc.c  ****   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+ 129              		.loc 1 79 0
+ 130 00ca 4FF00003 		mov	r3, #0
+ 131 00ce 3B74     		strb	r3, [r7, #16]
+  80:../src/rtc.c  ****   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+ 132              		.loc 1 80 0
+ 133 00d0 4FF00803 		mov	r3, #8
+ 134 00d4 7B74     		strb	r3, [r7, #17]
+  81:../src/rtc.c  ****   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+ 135              		.loc 1 81 0
+ 136 00d6 4FF00103 		mov	r3, #1
+ 137 00da BB74     		strb	r3, [r7, #18]
+  82:../src/rtc.c  ****   EXTI_Init(&EXTI_InitStructure);
+ 138              		.loc 1 82 0
+ 139 00dc 07F10C03 		add	r3, r7, #12
+ 140 00e0 1846     		mov	r0, r3
+ 141 00e2 FFF7FEFF 		bl	EXTI_Init
+  83:../src/rtc.c  **** 
+  84:../src/rtc.c  ****   // Enable the RTC Wakeup Interrupt
+  85:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannel = RTC_WKUP_IRQn;
+ 142              		.loc 1 85 0
+ 143 00e6 4FF00303 		mov	r3, #3
+ 144 00ea 3B75     		strb	r3, [r7, #20]
+  86:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+ 145              		.loc 1 86 0
+ 146 00ec 4FF00003 		mov	r3, #0
+ 147 00f0 7B75     		strb	r3, [r7, #21]
+  87:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+ 148              		.loc 1 87 0
+ 149 00f2 4FF00003 		mov	r3, #0
+ 150 00f6 BB75     		strb	r3, [r7, #22]
+  88:../src/rtc.c  ****   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+ 151              		.loc 1 88 0
+ 152 00f8 4FF00103 		mov	r3, #1
+ 153 00fc FB75     		strb	r3, [r7, #23]
+  89:../src/rtc.c  ****   NVIC_Init(&NVIC_InitStructure);
+ 154              		.loc 1 89 0
+ 155 00fe 07F11403 		add	r3, r7, #20
+ 156 0102 1846     		mov	r0, r3
+ 157 0104 FFF7FEFF 		bl	NVIC_Init
+  90:../src/rtc.c  **** 
+  91:../src/rtc.c  ****   // Configure the RTC WakeUp Clock source: CK_SPRE (1Hz)
+  92:../src/rtc.c  **** 
+  93:../src/rtc.c  ****   RTC_WakeUpClockConfig(RTC_WakeUpClock_CK_SPRE_16bits);
+ 158              		.loc 1 93 0
+ 159 0108 4FF00400 		mov	r0, #4
+ 160 010c FFF7FEFF 		bl	RTC_WakeUpClockConfig
+  94:../src/rtc.c  ****   RTC_SetWakeUpCounter(0x0);
+ 161              		.loc 1 94 0
+ 162 0110 4FF00000 		mov	r0, #0
+ 163 0114 FFF7FEFF 		bl	RTC_SetWakeUpCounter
+  95:../src/rtc.c  ****   RTC_ITConfig(RTC_IT_WUT, ENABLE);
+ 164              		.loc 1 95 0
+ 165 0118 4FF48040 		mov	r0, #16384
+ 166 011c 4FF00101 		mov	r1, #1
+ 167 0120 FFF7FEFF 		bl	RTC_ITConfig
+  96:../src/rtc.c  **** 
+  97:../src/rtc.c  ****   //**********************************************Gergõ**************************************
+  98:../src/rtc.c  **** /*  RTC_AlarmStructure.RTC_AlarmTime.RTC_H12     = RTC_H12_AM;
+  99:../src/rtc.c  ****   RTC_AlarmStructure.RTC_AlarmTime.RTC_Hours   = 0x05;
+ 100:../src/rtc.c  ****   RTC_AlarmStructure.RTC_AlarmTime.RTC_Minutes = 0x20;
+ 101:../src/rtc.c  ****   RTC_AlarmStructure.RTC_AlarmTime.RTC_Seconds = 0x30;
+ 102:../src/rtc.c  ****   RTC_AlarmStructure.RTC_AlarmDateWeekDay = 0x31;
+ 103:../src/rtc.c  ****   RTC_AlarmStructure.RTC_AlarmDateWeekDaySel = RTC_AlarmDateWeekDaySel_Date;
+ 104:../src/rtc.c  ****   RTC_AlarmStructure.RTC_AlarmMask = RTC_AlarmMask_DateWeekDay;*/
+ 105:../src/rtc.c  **** 
+ 106:../src/rtc.c  ****   /* Configure the RTC Alarm A register */
+ 107:../src/rtc.c  ****  /* RTC_SetAlarm(RTC_Format_BCD, RTC_Alarm_A, &RTC_AlarmStructure);*/
+ 108:../src/rtc.c  **** 
+ 109:../src/rtc.c  ****   /* Enable RTC Alarm A Interrupt */
+ 110:../src/rtc.c  **** /*  RTC_ITConfig(RTC_IT_ALRA, ENABLE);*/
+ 111:../src/rtc.c  **** 
+ 112:../src/rtc.c  ****   /* Enable the alarm */
+ 113:../src/rtc.c  **** /*  RTC_AlarmCmd(RTC_Alarm_A, ENABLE);*/
+ 114:../src/rtc.c  **** 
+ 115:../src/rtc.c  **** /*  RTC_ClearFlag(RTC_FLAG_ALRAF);*/
+ 116:../src/rtc.c  **** 
+ 117:../src/rtc.c  ****   RTC_DateStructure.RTC_Year = 0x14;
+ 168              		.loc 1 117 0
+ 169 0124 4FF01403 		mov	r3, #20
+ 170 0128 FB76     		strb	r3, [r7, #27]
+ 118:../src/rtc.c  ****   RTC_DateStructure.RTC_Month = RTC_Month_August;
+ 171              		.loc 1 118 0
+ 172 012a 4FF00803 		mov	r3, #8
+ 173 012e 7B76     		strb	r3, [r7, #25]
+ 119:../src/rtc.c  ****   RTC_DateStructure.RTC_Date = 0x8;
+ 174              		.loc 1 119 0
+ 175 0130 4FF00803 		mov	r3, #8
+ 176 0134 BB76     		strb	r3, [r7, #26]
+ 120:../src/rtc.c  ****   RTC_DateStructure.RTC_WeekDay = RTC_Weekday_Friday;
+ 177              		.loc 1 120 0
+ 178 0136 4FF00503 		mov	r3, #5
+ 179 013a 3B76     		strb	r3, [r7, #24]
+ 121:../src/rtc.c  ****   RTC_SetDate(RTC_Format_BCD, &RTC_DateStructure);
+ 180              		.loc 1 121 0
+ 181 013c 07F11803 		add	r3, r7, #24
+ 182 0140 4FF00100 		mov	r0, #1
+ 183 0144 1946     		mov	r1, r3
+ 184 0146 FFF7FEFF 		bl	RTC_SetDate
+ 122:../src/rtc.c  **** 
+ 123:../src/rtc.c  ****   RTC_TimeStructure.RTC_H12     = RTC_H12_PM;
+ 185              		.loc 1 123 0
+ 186 014a 4FF04003 		mov	r3, #64
+ 187 014e FB77     		strb	r3, [r7, #31]
+ 124:../src/rtc.c  ****   RTC_TimeStructure.RTC_Hours   = 0x00;
+ 188              		.loc 1 124 0
+ 189 0150 4FF00003 		mov	r3, #0
+ 190 0154 3B77     		strb	r3, [r7, #28]
+ 125:../src/rtc.c  ****   RTC_TimeStructure.RTC_Minutes = 0x14;
+ 191              		.loc 1 125 0
+ 192 0156 4FF01403 		mov	r3, #20
+ 193 015a 7B77     		strb	r3, [r7, #29]
+ 126:../src/rtc.c  ****   RTC_TimeStructure.RTC_Seconds = 0x00;
+ 194              		.loc 1 126 0
+ 195 015c 4FF00003 		mov	r3, #0
+ 196 0160 BB77     		strb	r3, [r7, #30]
+ 127:../src/rtc.c  ****   RTC_SetTime(RTC_Format_BCD, &RTC_TimeStructure);
+ 197              		.loc 1 127 0
+ 198 0162 07F11C03 		add	r3, r7, #28
+ 199 0166 4FF00100 		mov	r0, #1
+ 200 016a 1946     		mov	r1, r3
+ 201 016c FFF7FEFF 		bl	RTC_SetTime
+ 128:../src/rtc.c  **** 
+ 129:../src/rtc.c  ****   RTC_WriteBackupRegister(RTC_BKP_DR0, 0x32F2);
+ 202              		.loc 1 129 0
+ 203 0170 4FF00000 		mov	r0, #0
+ 204 0174 43F2F221 		movw	r1, #13042
+ 205 0178 FFF7FEFF 		bl	RTC_WriteBackupRegister
+ 130:../src/rtc.c  **** 
+ 131:../src/rtc.c  ****   //**********************************************Gergõ**************************************
+ 132:../src/rtc.c  **** 
+ 133:../src/rtc.c  **** 
+ 134:../src/rtc.c  ****   /* Enable Wakeup Counter */
+ 135:../src/rtc.c  **** //  RTC_WakeUpCmd(ENABLE);
+ 136:../src/rtc.c  **** }
+ 206              		.loc 1 136 0
+ 207 017c 07F12007 		add	r7, r7, #32
+ 208 0180 BD46     		mov	sp, r7
+ 209 0182 80BD     		pop	{r7, pc}
+ 210              		.cfi_endproc
+ 211              	.LFE110:
+ 213              	.Letext0:
+ 214              		.file 2 "c:\\program files (x86)\\codesourcery\\sourcery_codebench_lite_for_arm_eabi\\bin\\../lib/
+ 215              		.file 3 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\Device\\STM32F4xx\\Include/stm32f4xx.h"
+ 216              		.file 4 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/stm32f4x
+ 217              		.file 5 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/misc.h"
+ 218              		.file 6 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/stm32f4x
+ 219              		.file 7 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\CMSIS\\Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 rtc.c
+                            *COM*:0000000c RTC_InitStructure
+C:\Users\Gergo\AppData\Local\Temp\ccuJ8YsZ.s:19     .text:00000000 $t
+C:\Users\Gergo\AppData\Local\Temp\ccuJ8YsZ.s:24     .text:00000000 RTC_Config
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.1.fa6ddc8087252f7ec15b7f8b8133d3d8
+                           .group:00000000 wm4.rtc.h.9.df048b236a2ec9dc17646f9e6d2972af
+                           .group:00000000 wm4.stm32f4xx.h.48.0b3cda0630bac1bf9be1255cab0e1f3b
+                           .group:00000000 wm4.core_cm4.h.32.f824aba4d431a5bb4a51726bd5b62834
+                           .group:00000000 wm4.stdint.h.10.90b695f550ca6cc3fb08fa83baf01e05
+                           .group:00000000 wm4.core_cmInstr.h.25.f50f886f2edf670cf199b35fd96f5c91
+                           .group:00000000 wm4.core_cm4_simd.h.29.b4a3fdfb606cb3b26119424324d4b963
+                           .group:00000000 wm4.core_cm4.h.153.5393ef7e6cebf34dd51ca528f9218ab3
+                           .group:00000000 wm4.stm32f4xx.h.283.d309488c8c88fbc6a572fb5ddb72ae02
+                           .group:00000000 wm4.stm32f4xx_exti.h.54.435fdeac3da378720d6c1615172f0bf3
+                           .group:00000000 wm4.stm32f4xx_gpio.h.25.5bd1d790d742a307b55aea5fa8fcdae8
+                           .group:00000000 wm4.stm32f4xx_rcc.h.24.a10ec6e94989efb0f8f7f56448e9bb60
+                           .group:00000000 wm4.stm32f4xx_syscfg.h.25.9d5caab5677661b69e959531364e23d7
+                           .group:00000000 wm4.stm32f4xx_tim.h.25.948f7fc943f34bd206e29758e77ee0a2
+                           .group:00000000 wm4.misc.h.25.a0cb758c1f091b46f201b19cec9e63a1
+                           .group:00000000 wm4.stm32f4xx.h.6967.11efd59d6a7da8b33ccb47eb4d57a5b3
+                           .group:00000000 wm4.stm32f4xx_rtc.h.25.4809a79ad46ad97b4a01e735a96738eb
+                           .group:00000000 wm4.stm32f4_discovery.h.9.69df787b302fd7109e743d57c482f6e5
+
+UNDEFINED SYMBOLS
+RCC_APB1PeriphClockCmd
+PWR_BackupAccessCmd
+RCC_BackupResetCmd
+RCC_LSEConfig
+RCC_GetFlagStatus
+RCC_RTCCLKConfig
+RCC_RTCCLKCmd
+RTC_WaitForSynchro
+RTC_Init
+EXTI_ClearITPendingBit
+EXTI_Init
+NVIC_Init
+RTC_WakeUpClockConfig
+RTC_SetWakeUpCounter
+RTC_ITConfig
+RTC_SetDate
+RTC_SetTime
+RTC_WriteBackupRegister

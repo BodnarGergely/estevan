@@ -1,0 +1,561 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"outputs.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.align	2
+  19              		.global	Outputs_Init
+  20              		.thumb
+  21              		.thumb_func
+  23              	Outputs_Init:
+  24              	.LFB110:
+  25              		.file 1 "../src/outputs.c"
+   1:../src/outputs.c **** /*
+   2:../src/outputs.c ****  * outputs.c
+   3:../src/outputs.c ****  *
+   4:../src/outputs.c ****  *  Created on: 2013.07.01.
+   5:../src/outputs.c ****  *      Author: Gergo
+   6:../src/outputs.c ****  */
+   7:../src/outputs.c **** 
+   8:../src/outputs.c **** 
+   9:../src/outputs.c **** #include "outputs.h"
+  10:../src/outputs.c **** #include "stm32f4xx.h"
+  11:../src/outputs.c **** 
+  12:../src/outputs.c **** 
+  13:../src/outputs.c **** void Outputs_Init()
+  14:../src/outputs.c **** {
+  26              		.loc 1 14 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 8
+  29              		@ frame_needed = 1, uses_anonymous_args = 0
+  30 0000 80B5     		push	{r7, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 7, -8
+  34              		.cfi_offset 14, -4
+  35 0002 82B0     		sub	sp, sp, #8
+  36              	.LCFI1:
+  37              		.cfi_def_cfa_offset 16
+  38 0004 00AF     		add	r7, sp, #0
+  39              	.LCFI2:
+  40              		.cfi_def_cfa_register 7
+  15:../src/outputs.c ****       GPIO_InitTypeDef  GPIO_InitStructure;
+  16:../src/outputs.c **** 
+  17:../src/outputs.c ****       /* Output portok engedéélyezése */
+  18:../src/outputs.c ****       RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+  41              		.loc 1 18 0
+  42 0006 4FF00400 		mov	r0, #4
+  43 000a 4FF00101 		mov	r1, #1
+  44 000e FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  19:../src/outputs.c ****       RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+  45              		.loc 1 19 0
+  46 0012 4FF00800 		mov	r0, #8
+  47 0016 4FF00101 		mov	r1, #1
+  48 001a FFF7FEFF 		bl	RCC_AHB1PeriphClockCmd
+  20:../src/outputs.c **** 
+  21:../src/outputs.c ****       /* Output lábak inicializálása a C porton  */
+  22:../src/outputs.c ****       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_
+  49              		.loc 1 22 0
+  50 001e 4FF46B43 		mov	r3, #60160
+  51 0022 3B60     		str	r3, [r7, #0]
+  23:../src/outputs.c ****       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  52              		.loc 1 23 0
+  53 0024 4FF00103 		mov	r3, #1
+  54 0028 3B71     		strb	r3, [r7, #4]
+  24:../src/outputs.c ****       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  55              		.loc 1 24 0
+  56 002a 4FF00003 		mov	r3, #0
+  57 002e BB71     		strb	r3, [r7, #6]
+  25:../src/outputs.c ****       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  58              		.loc 1 25 0
+  59 0030 4FF00103 		mov	r3, #1
+  60 0034 FB71     		strb	r3, [r7, #7]
+  26:../src/outputs.c ****       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  61              		.loc 1 26 0
+  62 0036 4FF00003 		mov	r3, #0
+  63 003a 7B71     		strb	r3, [r7, #5]
+  27:../src/outputs.c ****       GPIO_Init(GPIOC, &GPIO_InitStructure);
+  64              		.loc 1 27 0
+  65 003c 3B46     		mov	r3, r7
+  66 003e 0E48     		ldr	r0, .L2
+  67 0040 1946     		mov	r1, r3
+  68 0042 FFF7FEFF 		bl	GPIO_Init
+  28:../src/outputs.c **** 
+  29:../src/outputs.c ****       /* Output lábak inicializálása a D porton  */
+  30:../src/outputs.c ****       GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11;
+  69              		.loc 1 30 0
+  70 0046 4FF47063 		mov	r3, #3840
+  71 004a 3B60     		str	r3, [r7, #0]
+  31:../src/outputs.c ****       GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  72              		.loc 1 31 0
+  73 004c 4FF00103 		mov	r3, #1
+  74 0050 3B71     		strb	r3, [r7, #4]
+  32:../src/outputs.c ****       GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  75              		.loc 1 32 0
+  76 0052 4FF00003 		mov	r3, #0
+  77 0056 BB71     		strb	r3, [r7, #6]
+  33:../src/outputs.c ****       GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  78              		.loc 1 33 0
+  79 0058 4FF00103 		mov	r3, #1
+  80 005c FB71     		strb	r3, [r7, #7]
+  34:../src/outputs.c ****       GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  81              		.loc 1 34 0
+  82 005e 4FF00003 		mov	r3, #0
+  83 0062 7B71     		strb	r3, [r7, #5]
+  35:../src/outputs.c ****       GPIO_Init(GPIOD, &GPIO_InitStructure);
+  84              		.loc 1 35 0
+  85 0064 3B46     		mov	r3, r7
+  86 0066 0548     		ldr	r0, .L2+4
+  87 0068 1946     		mov	r1, r3
+  88 006a FFF7FEFF 		bl	GPIO_Init
+  36:../src/outputs.c **** }
+  89              		.loc 1 36 0
+  90 006e 07F10807 		add	r7, r7, #8
+  91 0072 BD46     		mov	sp, r7
+  92 0074 80BD     		pop	{r7, pc}
+  93              	.L3:
+  94 0076 00BF     		.align	2
+  95              	.L2:
+  96 0078 00080240 		.word	1073874944
+  97 007c 000C0240 		.word	1073875968
+  98              		.cfi_endproc
+  99              	.LFE110:
+ 101              		.align	2
+ 102              		.global	Output_On
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	Output_On:
+ 107              	.LFB111:
+  37:../src/outputs.c **** 
+  38:../src/outputs.c **** void Output_On(Output_TypeDef Output)
+  39:../src/outputs.c **** {
+ 108              		.loc 1 39 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 8
+ 111              		@ frame_needed = 1, uses_anonymous_args = 0
+ 112 0080 80B5     		push	{r7, lr}
+ 113              	.LCFI3:
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 7, -8
+ 116              		.cfi_offset 14, -4
+ 117 0082 82B0     		sub	sp, sp, #8
+ 118              	.LCFI4:
+ 119              		.cfi_def_cfa_offset 16
+ 120 0084 00AF     		add	r7, sp, #0
+ 121              	.LCFI5:
+ 122              		.cfi_def_cfa_register 7
+ 123 0086 0346     		mov	r3, r0
+ 124 0088 FB71     		strb	r3, [r7, #7]
+  40:../src/outputs.c ****     switch(Output)
+ 125              		.loc 1 40 0
+ 126 008a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 127 008c 03F1FF33 		add	r3, r3, #-1
+ 128 0090 092B     		cmp	r3, #9
+ 129 0092 53D8     		bhi	.L4
+ 130 0094 01A2     		adr	r2, .L16
+ 131 0096 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 132 009a 00BF     		.align	2
+ 133              	.L16:
+ 134 009c C5000000 		.word	.L6+1
+ 135 00a0 D1000000 		.word	.L7+1
+ 136 00a4 DD000000 		.word	.L8+1
+ 137 00a8 E9000000 		.word	.L9+1
+ 138 00ac F5000000 		.word	.L10+1
+ 139 00b0 01010000 		.word	.L11+1
+ 140 00b4 0D010000 		.word	.L12+1
+ 141 00b8 19010000 		.word	.L13+1
+ 142 00bc 25010000 		.word	.L14+1
+ 143 00c0 31010000 		.word	.L15+1
+ 144              	.L6:
+  41:../src/outputs.c ****     {
+  42:../src/outputs.c ****         case Output_1:
+  43:../src/outputs.c ****             GPIO_SetBits(OUTPUT_1_PORT, OUTPUT_1_PIN);
+ 145              		.loc 1 43 0
+ 146 00c4 1F48     		ldr	r0, .L17
+ 147 00c6 4FF48041 		mov	r1, #16384
+ 148 00ca FFF7FEFF 		bl	GPIO_SetBits
+  44:../src/outputs.c ****         break;
+ 149              		.loc 1 44 0
+ 150 00ce 35E0     		b	.L4
+ 151              	.L7:
+  45:../src/outputs.c ****         case Output_2:
+  46:../src/outputs.c ****             GPIO_SetBits(OUTPUT_2_PORT, OUTPUT_2_PIN);
+ 152              		.loc 1 46 0
+ 153 00d0 1C48     		ldr	r0, .L17
+ 154 00d2 4FF40041 		mov	r1, #32768
+ 155 00d6 FFF7FEFF 		bl	GPIO_SetBits
+  47:../src/outputs.c ****         break;
+ 156              		.loc 1 47 0
+ 157 00da 2FE0     		b	.L4
+ 158              	.L8:
+  48:../src/outputs.c ****         case Output_3:
+  49:../src/outputs.c ****             GPIO_SetBits(OUTPUT_3_PORT, OUTPUT_3_PIN);
+ 159              		.loc 1 49 0
+ 160 00dc 1948     		ldr	r0, .L17
+ 161 00de 4FF40051 		mov	r1, #8192
+ 162 00e2 FFF7FEFF 		bl	GPIO_SetBits
+  50:../src/outputs.c ****         break;
+ 163              		.loc 1 50 0
+ 164 00e6 29E0     		b	.L4
+ 165              	.L9:
+  51:../src/outputs.c ****         case Output_4:
+  52:../src/outputs.c ****             GPIO_SetBits(OUTPUT_4_PORT, OUTPUT_4_PIN);
+ 166              		.loc 1 52 0
+ 167 00e8 1748     		ldr	r0, .L17+4
+ 168 00ea 4FF48071 		mov	r1, #256
+ 169 00ee FFF7FEFF 		bl	GPIO_SetBits
+  53:../src/outputs.c ****         break;
+ 170              		.loc 1 53 0
+ 171 00f2 23E0     		b	.L4
+ 172              	.L10:
+  54:../src/outputs.c ****         case Output_5:
+  55:../src/outputs.c ****             GPIO_SetBits(OUTPUT_5_PORT, OUTPUT_5_PIN);
+ 173              		.loc 1 55 0
+ 174 00f4 1448     		ldr	r0, .L17+4
+ 175 00f6 4FF40071 		mov	r1, #512
+ 176 00fa FFF7FEFF 		bl	GPIO_SetBits
+  56:../src/outputs.c ****         break;
+ 177              		.loc 1 56 0
+ 178 00fe 1DE0     		b	.L4
+ 179              	.L11:
+  57:../src/outputs.c ****         case Output_6:
+  58:../src/outputs.c ****             GPIO_SetBits(OUTPUT_6_PORT, OUTPUT_6_PIN);
+ 180              		.loc 1 58 0
+ 181 0100 1148     		ldr	r0, .L17+4
+ 182 0102 4FF48061 		mov	r1, #1024
+ 183 0106 FFF7FEFF 		bl	GPIO_SetBits
+  59:../src/outputs.c ****         break;
+ 184              		.loc 1 59 0
+ 185 010a 17E0     		b	.L4
+ 186              	.L12:
+  60:../src/outputs.c ****         case Output_7:
+  61:../src/outputs.c ****             GPIO_SetBits(OUTPUT_7_PORT, OUTPUT_7_PIN);
+ 187              		.loc 1 61 0
+ 188 010c 0E48     		ldr	r0, .L17+4
+ 189 010e 4FF40061 		mov	r1, #2048
+ 190 0112 FFF7FEFF 		bl	GPIO_SetBits
+  62:../src/outputs.c ****         break;
+ 191              		.loc 1 62 0
+ 192 0116 11E0     		b	.L4
+ 193              	.L13:
+  63:../src/outputs.c ****         case Output_8:
+  64:../src/outputs.c ****             GPIO_SetBits(OUTPUT_8_PORT, OUTPUT_8_PIN);
+ 194              		.loc 1 64 0
+ 195 0118 0A48     		ldr	r0, .L17
+ 196 011a 4FF40061 		mov	r1, #2048
+ 197 011e FFF7FEFF 		bl	GPIO_SetBits
+  65:../src/outputs.c ****         break;
+ 198              		.loc 1 65 0
+ 199 0122 0BE0     		b	.L4
+ 200              	.L14:
+  66:../src/outputs.c ****         case Output_9:
+  67:../src/outputs.c ****             GPIO_SetBits(OUTPUT_9_PORT, OUTPUT_9_PIN);
+ 201              		.loc 1 67 0
+ 202 0124 0748     		ldr	r0, .L17
+ 203 0126 4FF48071 		mov	r1, #256
+ 204 012a FFF7FEFF 		bl	GPIO_SetBits
+  68:../src/outputs.c ****         break;
+ 205              		.loc 1 68 0
+ 206 012e 05E0     		b	.L4
+ 207              	.L15:
+  69:../src/outputs.c ****         case Output_10:
+  70:../src/outputs.c ****             GPIO_SetBits(OUTPUT_10_PORT, OUTPUT_10_PIN);
+ 208              		.loc 1 70 0
+ 209 0130 0448     		ldr	r0, .L17
+ 210 0132 4FF40071 		mov	r1, #512
+ 211 0136 FFF7FEFF 		bl	GPIO_SetBits
+  71:../src/outputs.c ****         break;
+ 212              		.loc 1 71 0
+ 213 013a 00BF     		nop
+ 214              	.L4:
+  72:../src/outputs.c ****     }
+  73:../src/outputs.c **** }
+ 215              		.loc 1 73 0
+ 216 013c 07F10807 		add	r7, r7, #8
+ 217 0140 BD46     		mov	sp, r7
+ 218 0142 80BD     		pop	{r7, pc}
+ 219              	.L18:
+ 220              		.align	2
+ 221              	.L17:
+ 222 0144 00080240 		.word	1073874944
+ 223 0148 000C0240 		.word	1073875968
+ 224              		.cfi_endproc
+ 225              	.LFE111:
+ 227              		.align	2
+ 228              		.global	Output_Off
+ 229              		.thumb
+ 230              		.thumb_func
+ 232              	Output_Off:
+ 233              	.LFB112:
+  74:../src/outputs.c **** void Output_Off(Output_TypeDef Output)
+  75:../src/outputs.c **** {
+ 234              		.loc 1 75 0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 8
+ 237              		@ frame_needed = 1, uses_anonymous_args = 0
+ 238 014c 80B5     		push	{r7, lr}
+ 239              	.LCFI6:
+ 240              		.cfi_def_cfa_offset 8
+ 241              		.cfi_offset 7, -8
+ 242              		.cfi_offset 14, -4
+ 243 014e 82B0     		sub	sp, sp, #8
+ 244              	.LCFI7:
+ 245              		.cfi_def_cfa_offset 16
+ 246 0150 00AF     		add	r7, sp, #0
+ 247              	.LCFI8:
+ 248              		.cfi_def_cfa_register 7
+ 249 0152 0346     		mov	r3, r0
+ 250 0154 FB71     		strb	r3, [r7, #7]
+  76:../src/outputs.c ****     switch(Output)
+ 251              		.loc 1 76 0
+ 252 0156 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 253 0158 03F1FF33 		add	r3, r3, #-1
+ 254 015c 0A2B     		cmp	r3, #10
+ 255 015e 00F28880 		bhi	.L34
+ 256 0162 01A2     		adr	r2, .L32
+ 257 0164 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 258              		.align	2
+ 259              	.L32:
+ 260 0168 95010000 		.word	.L21+1
+ 261 016c A1010000 		.word	.L22+1
+ 262 0170 AD010000 		.word	.L23+1
+ 263 0174 B9010000 		.word	.L24+1
+ 264 0178 C5010000 		.word	.L25+1
+ 265 017c D1010000 		.word	.L26+1
+ 266 0180 DD010000 		.word	.L27+1
+ 267 0184 E9010000 		.word	.L28+1
+ 268 0188 F5010000 		.word	.L29+1
+ 269 018c 01020000 		.word	.L30+1
+ 270 0190 0D020000 		.word	.L31+1
+ 271              	.L21:
+  77:../src/outputs.c ****     {
+  78:../src/outputs.c ****         case Output_1:
+  79:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_1_PORT, OUTPUT_1_PIN);
+ 272              		.loc 1 79 0
+ 273 0194 3948     		ldr	r0, .L35
+ 274 0196 4FF48041 		mov	r1, #16384
+ 275 019a FFF7FEFF 		bl	GPIO_ResetBits
+  80:../src/outputs.c ****         break;
+ 276              		.loc 1 80 0
+ 277 019e 69E0     		b	.L19
+ 278              	.L22:
+  81:../src/outputs.c ****         case Output_2:
+  82:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_2_PORT, OUTPUT_2_PIN);
+ 279              		.loc 1 82 0
+ 280 01a0 3648     		ldr	r0, .L35
+ 281 01a2 4FF40041 		mov	r1, #32768
+ 282 01a6 FFF7FEFF 		bl	GPIO_ResetBits
+  83:../src/outputs.c ****         break;
+ 283              		.loc 1 83 0
+ 284 01aa 63E0     		b	.L19
+ 285              	.L23:
+  84:../src/outputs.c ****         case Output_3:
+  85:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_3_PORT, OUTPUT_3_PIN);
+ 286              		.loc 1 85 0
+ 287 01ac 3348     		ldr	r0, .L35
+ 288 01ae 4FF40051 		mov	r1, #8192
+ 289 01b2 FFF7FEFF 		bl	GPIO_ResetBits
+  86:../src/outputs.c ****         break;
+ 290              		.loc 1 86 0
+ 291 01b6 5DE0     		b	.L19
+ 292              	.L24:
+  87:../src/outputs.c ****         case Output_4:
+  88:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_4_PORT, OUTPUT_4_PIN);
+ 293              		.loc 1 88 0
+ 294 01b8 3148     		ldr	r0, .L35+4
+ 295 01ba 4FF48071 		mov	r1, #256
+ 296 01be FFF7FEFF 		bl	GPIO_ResetBits
+  89:../src/outputs.c ****         break;
+ 297              		.loc 1 89 0
+ 298 01c2 57E0     		b	.L19
+ 299              	.L25:
+  90:../src/outputs.c ****         case Output_5:
+  91:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_5_PORT, OUTPUT_5_PIN);
+ 300              		.loc 1 91 0
+ 301 01c4 2E48     		ldr	r0, .L35+4
+ 302 01c6 4FF40071 		mov	r1, #512
+ 303 01ca FFF7FEFF 		bl	GPIO_ResetBits
+  92:../src/outputs.c ****         break;
+ 304              		.loc 1 92 0
+ 305 01ce 51E0     		b	.L19
+ 306              	.L26:
+  93:../src/outputs.c ****         case Output_6:
+  94:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_6_PORT, OUTPUT_6_PIN);
+ 307              		.loc 1 94 0
+ 308 01d0 2B48     		ldr	r0, .L35+4
+ 309 01d2 4FF48061 		mov	r1, #1024
+ 310 01d6 FFF7FEFF 		bl	GPIO_ResetBits
+  95:../src/outputs.c ****         break;
+ 311              		.loc 1 95 0
+ 312 01da 4BE0     		b	.L19
+ 313              	.L27:
+  96:../src/outputs.c ****         case Output_7:
+  97:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_7_PORT, OUTPUT_7_PIN);
+ 314              		.loc 1 97 0
+ 315 01dc 2848     		ldr	r0, .L35+4
+ 316 01de 4FF40061 		mov	r1, #2048
+ 317 01e2 FFF7FEFF 		bl	GPIO_ResetBits
+  98:../src/outputs.c ****         break;
+ 318              		.loc 1 98 0
+ 319 01e6 45E0     		b	.L19
+ 320              	.L28:
+  99:../src/outputs.c ****         case Output_8:
+ 100:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_8_PORT, OUTPUT_8_PIN);
+ 321              		.loc 1 100 0
+ 322 01e8 2448     		ldr	r0, .L35
+ 323 01ea 4FF40061 		mov	r1, #2048
+ 324 01ee FFF7FEFF 		bl	GPIO_ResetBits
+ 101:../src/outputs.c ****         break;
+ 325              		.loc 1 101 0
+ 326 01f2 3FE0     		b	.L19
+ 327              	.L29:
+ 102:../src/outputs.c ****         case Output_9:
+ 103:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_9_PORT, OUTPUT_9_PIN);
+ 328              		.loc 1 103 0
+ 329 01f4 2148     		ldr	r0, .L35
+ 330 01f6 4FF48071 		mov	r1, #256
+ 331 01fa FFF7FEFF 		bl	GPIO_ResetBits
+ 104:../src/outputs.c ****         break;
+ 332              		.loc 1 104 0
+ 333 01fe 39E0     		b	.L19
+ 334              	.L30:
+ 105:../src/outputs.c ****         case Output_10:
+ 106:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_10_PORT, OUTPUT_10_PIN);
+ 335              		.loc 1 106 0
+ 336 0200 1E48     		ldr	r0, .L35
+ 337 0202 4FF40071 		mov	r1, #512
+ 338 0206 FFF7FEFF 		bl	GPIO_ResetBits
+ 107:../src/outputs.c ****         break;
+ 339              		.loc 1 107 0
+ 340 020a 33E0     		b	.L19
+ 341              	.L31:
+ 108:../src/outputs.c ****         case Output_all:
+ 109:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_1_PORT, OUTPUT_1_PIN);
+ 342              		.loc 1 109 0
+ 343 020c 1B48     		ldr	r0, .L35
+ 344 020e 4FF48041 		mov	r1, #16384
+ 345 0212 FFF7FEFF 		bl	GPIO_ResetBits
+ 110:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_2_PORT, OUTPUT_2_PIN);
+ 346              		.loc 1 110 0
+ 347 0216 1948     		ldr	r0, .L35
+ 348 0218 4FF40041 		mov	r1, #32768
+ 349 021c FFF7FEFF 		bl	GPIO_ResetBits
+ 111:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_3_PORT, OUTPUT_3_PIN);
+ 350              		.loc 1 111 0
+ 351 0220 1648     		ldr	r0, .L35
+ 352 0222 4FF40051 		mov	r1, #8192
+ 353 0226 FFF7FEFF 		bl	GPIO_ResetBits
+ 112:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_4_PORT, OUTPUT_4_PIN);
+ 354              		.loc 1 112 0
+ 355 022a 1548     		ldr	r0, .L35+4
+ 356 022c 4FF48071 		mov	r1, #256
+ 357 0230 FFF7FEFF 		bl	GPIO_ResetBits
+ 113:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_5_PORT, OUTPUT_5_PIN);
+ 358              		.loc 1 113 0
+ 359 0234 1248     		ldr	r0, .L35+4
+ 360 0236 4FF40071 		mov	r1, #512
+ 361 023a FFF7FEFF 		bl	GPIO_ResetBits
+ 114:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_6_PORT, OUTPUT_6_PIN);
+ 362              		.loc 1 114 0
+ 363 023e 1048     		ldr	r0, .L35+4
+ 364 0240 4FF48061 		mov	r1, #1024
+ 365 0244 FFF7FEFF 		bl	GPIO_ResetBits
+ 115:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_7_PORT, OUTPUT_7_PIN);
+ 366              		.loc 1 115 0
+ 367 0248 0D48     		ldr	r0, .L35+4
+ 368 024a 4FF40061 		mov	r1, #2048
+ 369 024e FFF7FEFF 		bl	GPIO_ResetBits
+ 116:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_8_PORT, OUTPUT_8_PIN);
+ 370              		.loc 1 116 0
+ 371 0252 0A48     		ldr	r0, .L35
+ 372 0254 4FF40061 		mov	r1, #2048
+ 373 0258 FFF7FEFF 		bl	GPIO_ResetBits
+ 117:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_9_PORT, OUTPUT_9_PIN);
+ 374              		.loc 1 117 0
+ 375 025c 0748     		ldr	r0, .L35
+ 376 025e 4FF48071 		mov	r1, #256
+ 377 0262 FFF7FEFF 		bl	GPIO_ResetBits
+ 118:../src/outputs.c ****             GPIO_ResetBits(OUTPUT_10_PORT, OUTPUT_10_PIN);
+ 378              		.loc 1 118 0
+ 379 0266 0548     		ldr	r0, .L35
+ 380 0268 4FF40071 		mov	r1, #512
+ 381 026c FFF7FEFF 		bl	GPIO_ResetBits
+ 119:../src/outputs.c ****             break;
+ 382              		.loc 1 119 0
+ 383 0270 00E0     		b	.L19
+ 384              	.L34:
+ 120:../src/outputs.c **** 
+ 121:../src/outputs.c ****         default:
+ 122:../src/outputs.c ****             break;
+ 385              		.loc 1 122 0
+ 386 0272 00BF     		nop
+ 387              	.L19:
+ 123:../src/outputs.c ****     }
+ 124:../src/outputs.c **** }
+ 388              		.loc 1 124 0
+ 389 0274 07F10807 		add	r7, r7, #8
+ 390 0278 BD46     		mov	sp, r7
+ 391 027a 80BD     		pop	{r7, pc}
+ 392              	.L36:
+ 393              		.align	2
+ 394              	.L35:
+ 395 027c 00080240 		.word	1073874944
+ 396 0280 000C0240 		.word	1073875968
+ 397              		.cfi_endproc
+ 398              	.LFE112:
+ 400              	.Letext0:
+ 401              		.file 2 "c:\\program files (x86)\\codesourcery\\sourcery_codebench_lite_for_arm_eabi\\bin\\../lib/
+ 402              		.file 3 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\Device\\STM32F4xx\\Include/stm32f4xx.h"
+ 403              		.file 4 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/stm32f4x
+ 404              		.file 5 "../src/outputs.h"
+ 405              		.file 6 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\CMSIS\\Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 outputs.c
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:18     .text:00000000 $t
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:23     .text:00000000 Outputs_Init
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:96     .text:00000078 $d
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:101    .text:00000080 $t
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:106    .text:00000080 Output_On
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:134    .text:0000009c $d
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:146    .text:000000c4 $t
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:222    .text:00000144 $d
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:227    .text:0000014c $t
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:232    .text:0000014c Output_Off
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:260    .text:00000168 $d
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:273    .text:00000194 $t
+C:\Users\Gergo\AppData\Local\Temp\ccweVbMh.s:395    .text:0000027c $d
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.1.fa6ddc8087252f7ec15b7f8b8133d3d8
+                           .group:00000000 wm4.stm32f4xx.h.48.0b3cda0630bac1bf9be1255cab0e1f3b
+                           .group:00000000 wm4.core_cm4.h.32.f824aba4d431a5bb4a51726bd5b62834
+                           .group:00000000 wm4.stdint.h.10.90b695f550ca6cc3fb08fa83baf01e05
+                           .group:00000000 wm4.core_cmInstr.h.25.f50f886f2edf670cf199b35fd96f5c91
+                           .group:00000000 wm4.core_cm4_simd.h.29.b4a3fdfb606cb3b26119424324d4b963
+                           .group:00000000 wm4.core_cm4.h.153.5393ef7e6cebf34dd51ca528f9218ab3
+                           .group:00000000 wm4.stm32f4xx.h.283.d309488c8c88fbc6a572fb5ddb72ae02
+                           .group:00000000 wm4.stm32f4xx_exti.h.54.435fdeac3da378720d6c1615172f0bf3
+                           .group:00000000 wm4.stm32f4xx_gpio.h.25.5bd1d790d742a307b55aea5fa8fcdae8
+                           .group:00000000 wm4.stm32f4xx_rcc.h.24.a10ec6e94989efb0f8f7f56448e9bb60
+                           .group:00000000 wm4.stm32f4xx_syscfg.h.25.9d5caab5677661b69e959531364e23d7
+                           .group:00000000 wm4.stm32f4xx_tim.h.25.948f7fc943f34bd206e29758e77ee0a2
+                           .group:00000000 wm4.misc.h.25.a0cb758c1f091b46f201b19cec9e63a1
+                           .group:00000000 wm4.stm32f4xx.h.6967.11efd59d6a7da8b33ccb47eb4d57a5b3
+                           .group:00000000 wm4.outputs.h.14.4ee1e3f260cdc251f723b177107d2a20
+
+UNDEFINED SYMBOLS
+RCC_AHB1PeriphClockCmd
+GPIO_Init
+GPIO_SetBits
+GPIO_ResetBits

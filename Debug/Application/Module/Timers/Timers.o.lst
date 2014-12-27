@@ -1,0 +1,452 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"Timers.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.comm	ADCConvertedValues,72,4
+  19              		.align	2
+  20              		.global	TimerConfig
+  21              		.thumb
+  22              		.thumb_func
+  24              	TimerConfig:
+  25              	.LFB110:
+  26              		.file 1 "../Application/Module/Timers/Timers.c"
+   1:../Application/Module/Timers/Timers.c **** /*
+   2:../Application/Module/Timers/Timers.c ****  * Timers.c
+   3:../Application/Module/Timers/Timers.c ****  *
+   4:../Application/Module/Timers/Timers.c ****  *  Created on: 2014.07.16.
+   5:../Application/Module/Timers/Timers.c ****  *      Author: Gergo
+   6:../Application/Module/Timers/Timers.c ****  */
+   7:../Application/Module/Timers/Timers.c **** 
+   8:../Application/Module/Timers/Timers.c **** 
+   9:../Application/Module/Timers/Timers.c **** #include "ADC_Driver.h"
+  10:../Application/Module/Timers/Timers.c **** #include "Timers.h"
+  11:../Application/Module/Timers/Timers.c **** #include "stm32f4xx.h"
+  12:../Application/Module/Timers/Timers.c **** #include "stm32f4_discovery.h"
+  13:../Application/Module/Timers/Timers.c **** #include "stm32f4xx_tim.h"
+  14:../Application/Module/Timers/Timers.c **** #include "stm32f4xx_adc.h"
+  15:../Application/Module/Timers/Timers.c **** #include "stm32f4xx_rtc.h"
+  16:../Application/Module/Timers/Timers.c **** #include "FLASH.h"
+  17:../Application/Module/Timers/Timers.c **** 
+  18:../Application/Module/Timers/Timers.c **** extern uint16_t aADCDualConvertedValue[10];
+  19:../Application/Module/Timers/Timers.c **** volatile uint16_t ADCConvertedValues[ADC_PACKAGE_MAX_NUMBER][12];
+  20:../Application/Module/Timers/Timers.c **** 
+  21:../Application/Module/Timers/Timers.c **** void TimerConfig()
+  22:../Application/Module/Timers/Timers.c **** {
+  27              		.loc 1 22 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 16
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 84B0     		sub	sp, sp, #16
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_offset 24
+  39 0004 00AF     		add	r7, sp, #0
+  40              	.LCFI2:
+  41              		.cfi_def_cfa_register 7
+  23:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+  24:../Application/Module/Timers/Timers.c **** 	NVIC_InitTypeDef NVIC_InitStructure;
+  25:../Application/Module/Timers/Timers.c **** 
+  26:../Application/Module/Timers/Timers.c **** 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);  	// APB1 -> 42 MHz, Timer -> 84 MHz
+  42              		.loc 1 26 0
+  43 0006 4FF00200 		mov	r0, #2
+  44 000a 4FF00101 		mov	r1, #1
+  45 000e FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+  27:../Application/Module/Timers/Timers.c **** 
+  28:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
+  46              		.loc 1 28 0
+  47 0012 07F10403 		add	r3, r7, #4
+  48 0016 1846     		mov	r0, r3
+  49 0018 FFF7FEFF 		bl	TIM_TimeBaseStructInit
+  29:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseStructure.TIM_Period = 41999;
+  50              		.loc 1 29 0
+  51 001c 4AF20F43 		movw	r3, #41999
+  52 0020 BB60     		str	r3, [r7, #8]
+  30:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseStructure.TIM_Prescaler = 999;
+  53              		.loc 1 30 0
+  54 0022 40F2E733 		movw	r3, #999
+  55 0026 BB80     		strh	r3, [r7, #4]	@ movhi
+  31:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  56              		.loc 1 31 0
+  57 0028 4FF00003 		mov	r3, #0
+  58 002c BB81     		strh	r3, [r7, #12]	@ movhi
+  32:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  59              		.loc 1 32 0
+  60 002e 4FF00003 		mov	r3, #0
+  61 0032 FB80     		strh	r3, [r7, #6]	@ movhi
+  33:../Application/Module/Timers/Timers.c **** 
+  34:../Application/Module/Timers/Timers.c **** 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+  62              		.loc 1 34 0
+  63 0034 07F10403 		add	r3, r7, #4
+  64 0038 1148     		ldr	r0, .L2
+  65 003a 1946     		mov	r1, r3
+  66 003c FFF7FEFF 		bl	TIM_TimeBaseInit
+  35:../Application/Module/Timers/Timers.c **** 	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+  67              		.loc 1 35 0
+  68 0040 0F48     		ldr	r0, .L2
+  69 0042 4FF00101 		mov	r1, #1
+  70 0046 4FF00102 		mov	r2, #1
+  71 004a FFF7FEFF 		bl	TIM_ITConfig
+  36:../Application/Module/Timers/Timers.c **** 
+  37:../Application/Module/Timers/Timers.c **** 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+  72              		.loc 1 37 0
+  73 004e 4FF01D03 		mov	r3, #29
+  74 0052 3B70     		strb	r3, [r7, #0]
+  38:../Application/Module/Timers/Timers.c **** 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  75              		.loc 1 38 0
+  76 0054 4FF00103 		mov	r3, #1
+  77 0058 FB70     		strb	r3, [r7, #3]
+  39:../Application/Module/Timers/Timers.c **** 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
+  78              		.loc 1 39 0
+  79 005a 4FF00503 		mov	r3, #5
+  80 005e 7B70     		strb	r3, [r7, #1]
+  40:../Application/Module/Timers/Timers.c **** 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  81              		.loc 1 40 0
+  82 0060 4FF00003 		mov	r3, #0
+  83 0064 BB70     		strb	r3, [r7, #2]
+  41:../Application/Module/Timers/Timers.c **** 	NVIC_Init(&NVIC_InitStructure);
+  84              		.loc 1 41 0
+  85 0066 3B46     		mov	r3, r7
+  86 0068 1846     		mov	r0, r3
+  87 006a FFF7FEFF 		bl	NVIC_Init
+  42:../Application/Module/Timers/Timers.c **** 
+  43:../Application/Module/Timers/Timers.c **** 	TIM_Cmd(TIM3, ENABLE);
+  88              		.loc 1 43 0
+  89 006e 0448     		ldr	r0, .L2
+  90 0070 4FF00101 		mov	r1, #1
+  91 0074 FFF7FEFF 		bl	TIM_Cmd
+  44:../Application/Module/Timers/Timers.c **** }
+  92              		.loc 1 44 0
+  93 0078 07F11007 		add	r7, r7, #16
+  94 007c BD46     		mov	sp, r7
+  95 007e 80BD     		pop	{r7, pc}
+  96              	.L3:
+  97              		.align	2
+  98              	.L2:
+  99 0080 00040040 		.word	1073742848
+ 100              		.cfi_endproc
+ 101              	.LFE110:
+ 103              		.align	2
+ 104              		.global	TIM3_IRQHandler
+ 105              		.thumb
+ 106              		.thumb_func
+ 108              	TIM3_IRQHandler:
+ 109              	.LFB111:
+  45:../Application/Module/Timers/Timers.c **** 
+  46:../Application/Module/Timers/Timers.c **** void TIM3_IRQHandler(void)
+  47:../Application/Module/Timers/Timers.c **** {
+ 110              		.loc 1 47 0
+ 111              		.cfi_startproc
+ 112              		@ args = 0, pretend = 0, frame = 16
+ 113              		@ frame_needed = 1, uses_anonymous_args = 0
+ 114 0084 90B5     		push	{r4, r7, lr}
+ 115              	.LCFI3:
+ 116              		.cfi_def_cfa_offset 12
+ 117              		.cfi_offset 4, -12
+ 118              		.cfi_offset 7, -8
+ 119              		.cfi_offset 14, -4
+ 120 0086 85B0     		sub	sp, sp, #20
+ 121              	.LCFI4:
+ 122              		.cfi_def_cfa_offset 32
+ 123 0088 00AF     		add	r7, sp, #0
+ 124              	.LCFI5:
+ 125              		.cfi_def_cfa_register 7
+  48:../Application/Module/Timers/Timers.c **** 	static int i = 0;
+  49:../Application/Module/Timers/Timers.c **** 	static uint8_t interruptStatus = 0;
+  50:../Application/Module/Timers/Timers.c **** 	int j = 0;
+ 126              		.loc 1 50 0
+ 127 008a 4FF00003 		mov	r3, #0
+ 128 008e FB60     		str	r3, [r7, #12]
+  51:../Application/Module/Timers/Timers.c **** 
+  52:../Application/Module/Timers/Timers.c **** 
+  53:../Application/Module/Timers/Timers.c **** 	RTC_TimeTypeDef RTC_TimeStruct;
+  54:../Application/Module/Timers/Timers.c **** 	RTC_DateTypeDef RTC_DateStruct;
+  55:../Application/Module/Timers/Timers.c **** 
+  56:../Application/Module/Timers/Timers.c **** 
+  57:../Application/Module/Timers/Timers.c **** 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)
+ 129              		.loc 1 57 0
+ 130 0090 5348     		ldr	r0, .L12
+ 131 0092 4FF00101 		mov	r1, #1
+ 132 0096 FFF7FEFF 		bl	TIM_GetITStatus
+ 133 009a 0346     		mov	r3, r0
+ 134 009c 012B     		cmp	r3, #1
+ 135 009e 40F09A80 		bne	.L4
+  58:../Application/Module/Timers/Timers.c **** 	{
+  59:../Application/Module/Timers/Timers.c **** 
+  60:../Application/Module/Timers/Timers.c **** 		STM_EVAL_LEDToggle(LED4);
+ 136              		.loc 1 60 0
+ 137 00a2 4FF00000 		mov	r0, #0
+ 138 00a6 FFF7FEFF 		bl	STM_EVAL_LEDToggle
+  61:../Application/Module/Timers/Timers.c **** 		STM_EVAL_LEDToggle(LED5);
+ 139              		.loc 1 61 0
+ 140 00aa 4FF00200 		mov	r0, #2
+ 141 00ae FFF7FEFF 		bl	STM_EVAL_LEDToggle
+  62:../Application/Module/Timers/Timers.c **** 		STM_EVAL_LEDToggle(LED6);
+ 142              		.loc 1 62 0
+ 143 00b2 4FF00300 		mov	r0, #3
+ 144 00b6 FFF7FEFF 		bl	STM_EVAL_LEDToggle
+  63:../Application/Module/Timers/Timers.c **** 
+  64:../Application/Module/Timers/Timers.c **** 		if(interruptStatus == 0)
+ 145              		.loc 1 64 0
+ 146 00ba 4A4B     		ldr	r3, .L12+4
+ 147 00bc 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 148 00be 002B     		cmp	r3, #0
+ 149 00c0 0AD1     		bne	.L6
+  65:../Application/Module/Timers/Timers.c **** 		{
+  66:../Application/Module/Timers/Timers.c **** 			ADC_SoftwareStartConv(ADC1);
+ 150              		.loc 1 66 0
+ 151 00c2 4948     		ldr	r0, .L12+8
+ 152 00c4 FFF7FEFF 		bl	ADC_SoftwareStartConv
+  67:../Application/Module/Timers/Timers.c **** 			interruptStatus++;
+ 153              		.loc 1 67 0
+ 154 00c8 464B     		ldr	r3, .L12+4
+ 155 00ca 1B78     		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 156 00cc 03F10103 		add	r3, r3, #1
+ 157 00d0 DAB2     		uxtb	r2, r3
+ 158 00d2 444B     		ldr	r3, .L12+4
+ 159 00d4 1A70     		strb	r2, [r3, #0]
+ 160 00d6 79E0     		b	.L7
+ 161              	.L6:
+  68:../Application/Module/Timers/Timers.c **** 		}
+  69:../Application/Module/Timers/Timers.c **** 		else
+  70:../Application/Module/Timers/Timers.c **** 		{
+  71:../Application/Module/Timers/Timers.c **** 			RTC_GetTime(RTC_Format_BCD, &RTC_TimeStruct);
+ 162              		.loc 1 71 0
+ 163 00d8 07F10803 		add	r3, r7, #8
+ 164 00dc 4FF00100 		mov	r0, #1
+ 165 00e0 1946     		mov	r1, r3
+ 166 00e2 FFF7FEFF 		bl	RTC_GetTime
+  72:../Application/Module/Timers/Timers.c **** 			RTC_GetDate(RTC_Format_BCD, &RTC_DateStruct);
+ 167              		.loc 1 72 0
+ 168 00e6 07F10403 		add	r3, r7, #4
+ 169 00ea 4FF00100 		mov	r0, #1
+ 170 00ee 1946     		mov	r1, r3
+ 171 00f0 FFF7FEFF 		bl	RTC_GetDate
+  73:../Application/Module/Timers/Timers.c **** 
+  74:../Application/Module/Timers/Timers.c **** 
+  75:../Application/Module/Timers/Timers.c **** 			if(i < ADC_PACKAGE_MAX_NUMBER)
+ 172              		.loc 1 75 0
+ 173 00f4 3D4B     		ldr	r3, .L12+12
+ 174 00f6 1B68     		ldr	r3, [r3, #0]
+ 175 00f8 022B     		cmp	r3, #2
+ 176 00fa 06DC     		bgt	.L8
+  76:../Application/Module/Timers/Timers.c **** 				i++;
+ 177              		.loc 1 76 0
+ 178 00fc 3B4B     		ldr	r3, .L12+12
+ 179 00fe 1B68     		ldr	r3, [r3, #0]
+ 180 0100 03F10102 		add	r2, r3, #1
+ 181 0104 394B     		ldr	r3, .L12+12
+ 182 0106 1A60     		str	r2, [r3, #0]
+ 183 0108 08E0     		b	.L9
+ 184              	.L8:
+  77:../Application/Module/Timers/Timers.c **** 			else
+  78:../Application/Module/Timers/Timers.c **** 			{
+  79:../Application/Module/Timers/Timers.c **** 				i = 0;
+ 185              		.loc 1 79 0
+ 186 010a 384B     		ldr	r3, .L12+12
+ 187 010c 4FF00002 		mov	r2, #0
+ 188 0110 1A60     		str	r2, [r3, #0]
+  80:../Application/Module/Timers/Timers.c **** 				//CopyToFlash((uint16_t*)ADCConvertedValues, (ADC_PACKAGE_MAX_NUMBER * SIZE_OF_PACK));
+  81:../Application/Module/Timers/Timers.c **** 				CopyToFlashTest((uint16_t*)ADCConvertedValues, (ADC_PACKAGE_MAX_NUMBER * SIZE_OF_PACK));
+ 189              		.loc 1 81 0
+ 190 0112 3748     		ldr	r0, .L12+16
+ 191 0114 4FF02401 		mov	r1, #36
+ 192 0118 FFF7FEFF 		bl	CopyToFlashTest
+ 193              	.L9:
+  82:../Application/Module/Timers/Timers.c **** 			}
+  83:../Application/Module/Timers/Timers.c **** 
+  84:../Application/Module/Timers/Timers.c **** 			for(j = 0; j < NUMBER_OF_CONVERSIONS; j++)
+ 194              		.loc 1 84 0
+ 195 011c 4FF00003 		mov	r3, #0
+ 196 0120 FB60     		str	r3, [r7, #12]
+ 197 0122 17E0     		b	.L10
+ 198              	.L11:
+  85:../Application/Module/Timers/Timers.c **** 				ADCConvertedValues[i][j + 2] = aADCDualConvertedValue[j];
+ 199              		.loc 1 85 0 discriminator 2
+ 200 0124 314B     		ldr	r3, .L12+12
+ 201 0126 1A68     		ldr	r2, [r3, #0]
+ 202 0128 FB68     		ldr	r3, [r7, #12]
+ 203 012a 03F10204 		add	r4, r3, #2
+ 204 012e 314B     		ldr	r3, .L12+20
+ 205 0130 F968     		ldr	r1, [r7, #12]
+ 206 0132 33F81100 		ldrh	r0, [r3, r1, lsl #1]
+ 207 0136 2E49     		ldr	r1, .L12+16
+ 208 0138 1346     		mov	r3, r2
+ 209 013a 4FEA4303 		lsl	r3, r3, #1
+ 210 013e 9B18     		adds	r3, r3, r2
+ 211 0140 4FEA8303 		lsl	r3, r3, #2
+ 212 0144 1B19     		adds	r3, r3, r4
+ 213 0146 0246     		mov	r2, r0	@ movhi
+ 214 0148 21F81320 		strh	r2, [r1, r3, lsl #1]	@ movhi
+  84:../Application/Module/Timers/Timers.c **** 			for(j = 0; j < NUMBER_OF_CONVERSIONS; j++)
+ 215              		.loc 1 84 0 discriminator 2
+ 216 014c FB68     		ldr	r3, [r7, #12]
+ 217 014e 03F10103 		add	r3, r3, #1
+ 218 0152 FB60     		str	r3, [r7, #12]
+ 219              	.L10:
+  84:../Application/Module/Timers/Timers.c **** 			for(j = 0; j < NUMBER_OF_CONVERSIONS; j++)
+ 220              		.loc 1 84 0 is_stmt 0 discriminator 1
+ 221 0154 FB68     		ldr	r3, [r7, #12]
+ 222 0156 092B     		cmp	r3, #9
+ 223 0158 E4DD     		ble	.L11
+  86:../Application/Module/Timers/Timers.c **** 
+  87:../Application/Module/Timers/Timers.c **** 			ADCConvertedValues[i][0] = (((RTC_DateStruct.RTC_Year) << 8) | (RTC_DateStruct.RTC_Month));
+ 224              		.loc 1 87 0 is_stmt 1
+ 225 015a 244B     		ldr	r3, .L12+12
+ 226 015c 1A68     		ldr	r2, [r3, #0]
+ 227 015e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 228 0160 4FEA0323 		lsl	r3, r3, #8
+ 229 0164 99B2     		uxth	r1, r3
+ 230 0166 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 231 0168 0B43     		orrs	r3, r3, r1
+ 232 016a 9BB2     		uxth	r3, r3
+ 233 016c 99B2     		uxth	r1, r3
+ 234 016e 2048     		ldr	r0, .L12+16
+ 235 0170 1346     		mov	r3, r2
+ 236 0172 4FEA4303 		lsl	r3, r3, #1
+ 237 0176 9B18     		adds	r3, r3, r2
+ 238 0178 4FEAC303 		lsl	r3, r3, #3
+ 239 017c C318     		adds	r3, r0, r3
+ 240 017e 0A46     		mov	r2, r1	@ movhi
+ 241 0180 1A80     		strh	r2, [r3, #0]	@ movhi
+  88:../Application/Module/Timers/Timers.c **** 			ADCConvertedValues[i][1] = (((RTC_DateStruct.RTC_Date & 0x1F) << 11) | ((RTC_TimeStruct.RTC_Hour
+ 242              		.loc 1 88 0
+ 243 0182 1A4B     		ldr	r3, .L12+12
+ 244 0184 1A68     		ldr	r2, [r3, #0]
+ 245 0186 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 246 0188 4FEAC323 		lsl	r3, r3, #11
+ 247 018c 99B2     		uxth	r1, r3
+ 248 018e 3B7A     		ldrb	r3, [r7, #8]	@ zero_extendqisi2
+ 249 0190 03F01F03 		and	r3, r3, #31
+ 250 0194 4FEA8313 		lsl	r3, r3, #6
+ 251 0198 9BB2     		uxth	r3, r3
+ 252 019a 0B43     		orrs	r3, r3, r1
+ 253 019c 99B2     		uxth	r1, r3
+ 254 019e 7B7A     		ldrb	r3, [r7, #9]	@ zero_extendqisi2
+ 255 01a0 03F03F03 		and	r3, r3, #63
+ 256 01a4 9BB2     		uxth	r3, r3
+ 257 01a6 0B43     		orrs	r3, r3, r1
+ 258 01a8 9BB2     		uxth	r3, r3
+ 259 01aa 99B2     		uxth	r1, r3
+ 260 01ac 1048     		ldr	r0, .L12+16
+ 261 01ae 1346     		mov	r3, r2
+ 262 01b0 4FEA4303 		lsl	r3, r3, #1
+ 263 01b4 9B18     		adds	r3, r3, r2
+ 264 01b6 4FEAC303 		lsl	r3, r3, #3
+ 265 01ba C318     		adds	r3, r0, r3
+ 266 01bc 03F10203 		add	r3, r3, #2
+ 267 01c0 0A46     		mov	r2, r1	@ movhi
+ 268 01c2 1A80     		strh	r2, [r3, #0]	@ movhi
+  89:../Application/Module/Timers/Timers.c **** 
+  90:../Application/Module/Timers/Timers.c **** 			interruptStatus = 0;
+ 269              		.loc 1 90 0
+ 270 01c4 074B     		ldr	r3, .L12+4
+ 271 01c6 4FF00002 		mov	r2, #0
+ 272 01ca 1A70     		strb	r2, [r3, #0]
+ 273              	.L7:
+  91:../Application/Module/Timers/Timers.c **** 		}
+  92:../Application/Module/Timers/Timers.c **** 
+  93:../Application/Module/Timers/Timers.c **** 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+ 274              		.loc 1 93 0
+ 275 01cc 0448     		ldr	r0, .L12
+ 276 01ce 4FF00101 		mov	r1, #1
+ 277 01d2 FFF7FEFF 		bl	TIM_ClearITPendingBit
+ 278              	.L4:
+  94:../Application/Module/Timers/Timers.c ****    }
+  95:../Application/Module/Timers/Timers.c **** }
+ 279              		.loc 1 95 0
+ 280 01d6 07F11407 		add	r7, r7, #20
+ 281 01da BD46     		mov	sp, r7
+ 282 01dc 90BD     		pop	{r4, r7, pc}
+ 283              	.L13:
+ 284 01de 00BF     		.align	2
+ 285              	.L12:
+ 286 01e0 00040040 		.word	1073742848
+ 287 01e4 00000000 		.word	interruptStatus.6250
+ 288 01e8 00200140 		.word	1073815552
+ 289 01ec 04000000 		.word	i.6249
+ 290 01f0 00000000 		.word	ADCConvertedValues
+ 291 01f4 00000000 		.word	aADCDualConvertedValue
+ 292              		.cfi_endproc
+ 293              	.LFE111:
+ 295              		.bss
+ 296              	interruptStatus.6250:
+ 297 0000 00       		.space	1
+ 298 0001 000000   		.align	2
+ 299              	i.6249:
+ 300 0004 00000000 		.space	4
+ 301              		.text
+ 302              	.Letext0:
+ 303              		.file 2 "c:\\program files (x86)\\codesourcery\\sourcery_codebench_lite_for_arm_eabi\\bin\\../lib/
+ 304              		.file 3 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\Device\\STM32F4xx\\Include/stm32f4xx.h"
+ 305              		.file 4 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/stm32f4x
+ 306              		.file 5 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/misc.h"
+ 307              		.file 6 "C:\\Users\\Gergo\\workspace\\estevan\\src/stm32f4_discovery.h"
+ 308              		.file 7 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\STM32F4xx_StdPeriph_Driver\\inc/stm32f4x
+ 309              		.file 8 "C:\\Users\\Gergo\\workspace\\estevan\\Libraries\\CMSIS\\Include/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Timers.c
+                            *COM*:00000048 ADCConvertedValues
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:19     .text:00000000 $t
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:24     .text:00000000 TimerConfig
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:99     .text:00000080 $d
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:103    .text:00000084 $t
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:108    .text:00000084 TIM3_IRQHandler
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:286    .text:000001e0 $d
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:296    .bss:00000000 interruptStatus.6250
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:299    .bss:00000004 i.6249
+C:\Users\Gergo\AppData\Local\Temp\ccPtwT2P.s:297    .bss:00000000 $d
+                     .debug_frame:00000010 $d
+                           .group:00000000 wm4.1.fa6ddc8087252f7ec15b7f8b8133d3d8
+                           .group:00000000 wm4.ADC_Driver.h.9.6d43d163a0368e059ce768ff8809edd7
+                           .group:00000000 wm4.Timers.h.9.211794f21fbc5c49449dd3a449a88193
+                           .group:00000000 wm4.stm32f4xx.h.48.0b3cda0630bac1bf9be1255cab0e1f3b
+                           .group:00000000 wm4.core_cm4.h.32.f824aba4d431a5bb4a51726bd5b62834
+                           .group:00000000 wm4.stdint.h.10.90b695f550ca6cc3fb08fa83baf01e05
+                           .group:00000000 wm4.core_cmInstr.h.25.f50f886f2edf670cf199b35fd96f5c91
+                           .group:00000000 wm4.core_cm4_simd.h.29.b4a3fdfb606cb3b26119424324d4b963
+                           .group:00000000 wm4.core_cm4.h.153.5393ef7e6cebf34dd51ca528f9218ab3
+                           .group:00000000 wm4.stm32f4xx.h.283.d309488c8c88fbc6a572fb5ddb72ae02
+                           .group:00000000 wm4.stm32f4xx_exti.h.54.435fdeac3da378720d6c1615172f0bf3
+                           .group:00000000 wm4.stm32f4xx_gpio.h.25.5bd1d790d742a307b55aea5fa8fcdae8
+                           .group:00000000 wm4.stm32f4xx_rcc.h.24.a10ec6e94989efb0f8f7f56448e9bb60
+                           .group:00000000 wm4.stm32f4xx_syscfg.h.25.9d5caab5677661b69e959531364e23d7
+                           .group:00000000 wm4.stm32f4xx_tim.h.25.948f7fc943f34bd206e29758e77ee0a2
+                           .group:00000000 wm4.misc.h.25.a0cb758c1f091b46f201b19cec9e63a1
+                           .group:00000000 wm4.stm32f4xx.h.6967.11efd59d6a7da8b33ccb47eb4d57a5b3
+                           .group:00000000 wm4.stm32f4_discovery.h.9.69df787b302fd7109e743d57c482f6e5
+                           .group:00000000 wm4.stm32f4xx_adc.h.25.80f895788ceb875268c0a50aca789b33
+                           .group:00000000 wm4.stm32f4xx_rtc.h.25.4809a79ad46ad97b4a01e735a96738eb
+                           .group:00000000 wm4.FLASH.h.9.916e4f44a8449fa8ae10fea1b53cafee
+
+UNDEFINED SYMBOLS
+RCC_APB1PeriphClockCmd
+TIM_TimeBaseStructInit
+TIM_TimeBaseInit
+TIM_ITConfig
+NVIC_Init
+TIM_Cmd
+TIM_GetITStatus
+STM_EVAL_LEDToggle
+ADC_SoftwareStartConv
+RTC_GetTime
+RTC_GetDate
+CopyToFlashTest
+TIM_ClearITPendingBit
+aADCDualConvertedValue
